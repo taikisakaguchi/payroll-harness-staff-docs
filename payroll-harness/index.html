@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>給与計算ハーネス スタッフ運用ガイド</title>
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --ink-2: #4a4a4a;
+    --bg: #f7f5ee;
+    --paper: #fbf9f1;
+    --line: #d8d2bf;
+    --accent: #2b6cb0;
+    --accent-soft: #dbe7f3;
+    --warn: #c83a2c;
+    --warn-soft: #f6dcd6;
+    --yellow: #f4d35e;
+    --shadow: 0 1px 0 rgba(0,0,0,.04), 0 8px 24px rgba(0,0,0,.06);
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN",
+            "Hiragino Sans", "Noto Sans JP", "Yu Gothic", "Meiryo", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 56px 28px 96px; }
+
+  .hero { margin-bottom: 56px; }
+  .hero .kicker {
+    display: inline-block;
+    background: var(--accent); color: #fff;
+    font-size: 12px; font-weight: 700; letter-spacing: .12em;
+    padding: 6px 12px; border-radius: 999px;
+    margin-bottom: 18px;
+  }
+  .hero h1 {
+    font-size: 38px; line-height: 1.35; margin: 0 0 14px;
+    letter-spacing: -.01em;
+  }
+  .hero h1 b { color: var(--accent); }
+  .hero p.lede {
+    font-size: 18px; color: var(--ink-2); margin: 0; max-width: 780px;
+  }
+  .tldr {
+    margin-top: 28px; padding: 22px 24px;
+    background: var(--paper); border: 1px solid var(--line); border-radius: 12px;
+    box-shadow: var(--shadow);
+  }
+  .tldr h2 { font-size: 13px; letter-spacing: .15em; color: var(--accent); margin: 0 0 10px; }
+  .tldr ol { margin: 0; padding-left: 20px; }
+  .tldr li { margin: 4px 0; }
+
+  section { margin: 64px 0 0; }
+  section > h2 {
+    font-size: 28px; line-height: 1.4; margin: 0 0 6px;
+    border-left: 6px solid var(--accent); padding-left: 12px;
+  }
+  section > h2 .num {
+    color: var(--accent); font-variant-numeric: tabular-nums; margin-right: 10px;
+  }
+  section > p.sub { color: var(--ink-2); margin: 0 0 22px; }
+
+
+  figure {
+    margin: 0 0 24px; padding: 12px;
+    background: var(--paper); border: 1px solid var(--line); border-radius: 14px;
+    box-shadow: var(--shadow);
+  }
+  figure img { display: block; width: 100%; height: auto; border-radius: 8px; }
+  figcaption { font-size: 13px; color: var(--ink-2); margin-top: 10px; text-align: center; }
+
+  .table {
+    width: 100%; border-collapse: collapse; margin: 12px 0 6px;
+    background: var(--paper); border: 1px solid var(--line); border-radius: 12px; overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .table th, .table td {
+    text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--line);
+    vertical-align: top; font-size: 14.5px;
+  }
+  .table th { background: #efeadb; font-weight: 700; }
+  .table tr:last-child td { border-bottom: 0; }
+  .table .pick { background: var(--accent-soft); }
+  .table .pick td:first-child { font-weight: 700; color: var(--accent); }
+
+  code.inline {
+    font-family: var(--mono); font-size: .92em;
+    background: #efeadb; padding: 1px 6px; border-radius: 4px;
+  }
+
+  .callout {
+    margin: 18px 0;
+    padding: 16px 18px;
+    border-left: 4px solid var(--accent);
+    background: var(--accent-soft);
+    border-radius: 0 10px 10px 0;
+  }
+  .callout.warn { border-color: var(--warn); background: var(--warn-soft); }
+  .callout p { margin: 0; }
+  .callout p + p { margin-top: 8px; }
+  .callout strong { color: var(--accent); }
+  .callout.warn strong { color: var(--warn); }
+
+  .quote {
+    border-left: 3px solid var(--line); padding: 6px 16px;
+    color: var(--ink-2); font-size: 15px; margin: 18px 0;
+  }
+
+  /* 月次フローの帯 */
+  .flow { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 6px; }
+  .flow .step {
+    flex: 1 1 120px; min-width: 118px;
+    background: var(--paper); border: 1px solid var(--line); border-radius: 10px;
+    padding: 10px 12px; box-shadow: var(--shadow); position: relative;
+  }
+  .flow .step .no {
+    display: inline-block; background: var(--accent); color: #fff;
+    font-size: 11px; font-weight: 700; border-radius: 999px; padding: 1px 8px; margin-bottom: 6px;
+  }
+  .flow .step .who { font-size: 11px; color: var(--ink-2); }
+  .flow .step .what { font-size: 13.5px; font-weight: 700; line-height: 1.45; }
+
+  .conclusion {
+    margin-top: 56px; padding: 28px 28px 24px;
+    background: var(--ink); color: #f6f3e8; border-radius: 16px;
+  }
+  .conclusion h2 { color: var(--yellow); border: 0; padding: 0; margin: 0 0 12px; font-size: 24px; }
+  .conclusion ol { margin: 0; padding-left: 20px; }
+  .conclusion li { margin: 6px 0; }
+
+  footer { margin-top: 36px; color: var(--ink-2); font-size: 13px; }
+
+  @media (max-width: 720px) {
+    .wrap { padding: 32px 18px 64px; }
+    .hero h1 { font-size: 28px; }
+    section > h2 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <span class="kicker">坂口社会保険労務士事務所｜給与計算ハーネス</span>
+    <h1>給与計算の<b>転記・計算・突合</b>を機械に任せ、<br>人は<b>事実の入力</b>と<b>判断</b>に集中する</h1>
+    <p class="lede">このページは、当事務所の給与計算を支える検証の仕組み（給与計算ハーネス）の全体像と、スタッフの皆さんに毎月お願いする操作をまとめた運用ガイドです。プログラムの中身を知らなくても運用できるように作られています。</p>
+    <div class="tldr">
+      <h2>まずこれだけ</h2>
+      <ol>
+        <li>覚えるものは<b>3つだけ</b> — 「変動事項入力シート」「Claude Code（CC）への依頼」「アラート一覧」</li>
+        <li><b>先月と変わることは必ずシートへ。</b>書いてあれば金額まで機械が照合し、書き忘れても機械が🔴で捕まえてくれる</li>
+        <li><b>🔴がゼロ＋照会に全回答するまで確定・納品しない。</b>判断に迷うものは、機械も人も、全部所長へ</li>
+      </ol>
+    </div>
+  </header>
+
+  <section>
+    <h2><span class="num">01</span>全体像 — 2つのハーネスと1つの台帳</h2>
+    <p class="sub">仕組みは「実行（作る）」と「確認（検算する）」の2枚構成。あいだに給与システム（OS給与）があり、共有の記憶として台帳（payroll-db）があります。</p>
+    <figure>
+      <img src="images/concept-01-01.png" alt="給与計算ハーネスの全体像（グラレコ）">
+      <figcaption>全体像: 作る側（実行A）と検算する側（確認B）を分け、台帳が両方をつなぐ。台帳の詳しい中身は次章の図へ</figcaption>
+    </figure>
+    <div class="flow">
+      <div class="step"><span class="no">月の途中</span><div class="what">変動をシートに書き溜める</div><div class="who">スタッフ（都度）</div></div>
+      <div class="step"><span class="no">締め後</span><div class="what">勤怠CSVを所定フォルダへ</div><div class="who">スタッフ</div></div>
+      <div class="step"><span class="no">実行A</span><div class="what">取込データ生成 → OS給与へ</div><div class="who">CC＋人が取込</div></div>
+      <div class="step"><span class="no">計算</span><div class="what">OS給与で計算・一覧表出力</div><div class="who">人</div></div>
+      <div class="step"><span class="no">確認B</span><div class="what">11系統の機械チェック</div><div class="who">CC</div></div>
+      <div class="step"><span class="no">確定</span><div class="what">🔴ゼロを確認して確定</div><div class="who">所長</div></div>
+    </div>
+    <p><b>実行ハーネス（A）</b>が勤怠と変動事項から給与システムへの取込データを作り、<b>確認ハーネス（B）</b>が計算結果（支給控除一覧表）を台帳と<b>独立に</b>突き合わせます。作る側と検算する側を分けているのは、同じ場所で作って確かめると間違いに気づけないからです。</p>
+    <table class="table">
+      <thead><tr><th>覚えるもの</th><th>場所</th><th>役割</th></tr></thead>
+      <tbody>
+        <tr class="pick"><td>変動事項入力シート.xlsx</td><td>payroll-db 直下</td><td>顧客・所内からの「今月の変化」を書き溜める表。<b>すべての起点</b></td></tr>
+        <tr><td>Claude Code（CC）</td><td>ターミナル</td><td>「6月分の取込データを作って」「給与チェックして」と頼むだけ。中の仕組みは知らなくてよい</td></tr>
+        <tr><td>アラート一覧.xlsx</td><td>給与資料/2026/YYYYMM/</td><td>CCが出す「確認してほしいことリスト」。🔴を潰すのがスタッフの仕事</td></tr>
+      </tbody>
+    </table>
+    <div class="callout"><p><strong>スタッフが台帳ファイル（YAML）を直接触ることはありません。</strong>台帳の更新はすべてシート→CC経由で行われ、直接編集は検証の前提を壊すため禁止です。</p></div>
+  </section>
+
+  <section>
+    <h2><span class="num">02</span>台帳（payroll-db）が管理している情報</h2>
+    <p class="sub">台帳は事務所側の「正」。給与システムはあくまで計算機で、毎月この2つを独立に突き合わせるのが仕組みの核です。</p>
+    <figure>
+      <img src="images/concept-02-01.png" alt="台帳が管理している5つの情報（グラレコ）">
+      <figcaption>台帳（payroll-db）の5つの情報。すべての起点は②変動事項台帳</figcaption>
+    </figure>
+    <table class="table">
+      <thead><tr><th>台帳</th><th>入っている情報</th><th>誰がいつ更新するか</th></tr></thead>
+      <tbody>
+        <tr><td>従業員台帳（employees/）</td><td>基本情報・給与の内訳・社会保険（標準報酬・取得/喪失日・決定履歴）・税区分・住民税</td><td>入社時に所長がCCへ依頼して作成。変化はシート経由で反映。退職しても消さない（手続きの根拠のため永続保管）</td></tr>
+        <tr class="pick"><td>変動事項台帳（events）</td><td>昇給・入退社・休職・手当変更など「先月と変わること」を予定額つきで構造化した記録</td><td><b>変動事項入力シートからCCが取込</b>。ここに書かれた予定と実際の給与を機械が金額まで照合する</td></tr>
+        <tr><td>月次記録（monthly/）</td><td>支給控除一覧表のミラー（支給・控除・勤怠・差引支給額・振込合計）</td><td>計算後にCCが転記。前月との差分比較や社保・住民税の検算の材料になる</td></tr>
+        <tr><td>有給管理簿</td><td>付与履歴・取得累計・残日数・時効・年5日義務の進捗</td><td>月次確定時に更新。残日数の整合や時効消滅を機械が検算</td></tr>
+        <tr><td>会社設定（config/）</td><td>賃金規程のパラメータ（所定労働時間・手当の扱い・丸め方）と法令値（料率・最低賃金・標準報酬表）</td><td>所長＋CC。料率や最低賃金の改定月は機械がカレンダーで監視</td></tr>
+      </tbody>
+    </table>
+    <div class="callout"><p><strong>「書いていない変化は存在しない」が原則。</strong>口頭連絡や記憶で処理された変化は台帳に残らず、翌月以降のチェックが働きません。だから「とにかくシートに書く」がすべての起点になります。</p></div>
+  </section>
+
+  <section>
+    <h2><span class="num">03</span>スタッフにお願いする入力・更新</h2>
+    <p class="sub">日々の入力はこれだけです。難しい判定はすべて機械と所長の側にあります。</p>
+    <figure>
+      <img src="images/concept-03-01.png" alt="起点は変動事項入力シート（グラレコ）">
+      <figcaption>起点は変動事項入力シート。CC＝Claude Code（依頼を受けてシートを台帳へ取り込む）</figcaption>
+    </figure>
+    <table class="table">
+      <thead><tr><th>タイミング</th><th>やること</th><th>ポイント</th></tr></thead>
+      <tbody>
+        <tr class="pick"><td>都度（連絡が来たら）</td><td>変動事項入力シートに1行追加</td><td>誰・何があった（ドロップダウン）・いつの給与から・金額または日付・出どころ（メールの日付等）・記入者</td></tr>
+        <tr><td>締め後（月初）</td><td>勤怠CSVを所定フォルダに置く</td><td>勤怠ツールからエクスポートしてそのまま。加工不要</td></tr>
+        <tr><td>締め後</td><td>CCに「◯月分の取込データを作って」</td><td>不備があれば「◯行目: 形式が違う」と返るので直して再依頼。できたファイルを人がOS給与へ一括取込</td></tr>
+        <tr><td>計算後</td><td>支給控除一覧表を置き、CCに「◯月分の給与チェックして」</td><td>一覧表の<b>差引支給額と振込合計</b>も転記対象（振込段の転記ミスまで機械が検出できるようになる）</td></tr>
+        <tr><td>チェック後</td><td>アラート一覧の🔴を潰す・照会事項に回答を記入</td><td>直したらOS給与で再計算→再チェック。🔴ゼロまで繰り返す</td></tr>
+      </tbody>
+    </table>
+    <div class="callout warn">
+      <p><strong>種別リストにない出来事はシートに書かず、所長へ相談してください。</strong>（例: 扶養の増減・手当の新設や廃止・勤務時間の変更）無理に近い種別へ当てはめると機械が誤った照合をします。</p>
+      <p><strong>特に「固定給に触る変化」（手当の新設・廃止・通勤手当の変更・時給単価の変更など）は、相談中でも社会保険の随時改定（月変）の追跡対象です。</strong>所長が台帳へ直接登録し、3ヶ月の監視に載ります。握りつぶしは厳禁です。</p>
+    </div>
+    <div class="callout"><p><strong>入社だけは順番が逆です。</strong>①先に所長へ連絡 → 所長がCCに依頼して従業員台帳を作成 → ②台帳ができたらシートに「入社」を記入（台帳にない人はドロップダウンに出ない＝仕組みで順番が守られます）。</p></div>
+  </section>
+
+  <section>
+    <h2><span class="num">04</span>月次の流れ（誰が・いつ・何を）</h2>
+    <p class="sub">例: 6月分給与（6月勤務・7月支給）の1ヶ月。</p>
+    <figure>
+      <img src="images/concept-04-01.png" alt="月次の流れ7ステップ（グラレコ）">
+      <figcaption>月次の7ステップ。[6]は🔴ゼロになるまで[5]へ戻って繰り返す</figcaption>
+    </figure>
+    <table class="table">
+      <thead><tr><th>#</th><th>タイミング</th><th>担当</th><th>やること</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>月の途中（都度）</td><td>スタッフ</td><td>変動事項をシートに書き溜める</td></tr>
+        <tr><td>2</td><td>締め後（月初）</td><td>スタッフ</td><td>勤怠CSVを所定フォルダへ置く</td></tr>
+        <tr><td>3</td><td>締め後</td><td>スタッフ→CC→人</td><td>取込データ生成を依頼し、できたファイルをOS給与へ一括取込（時間形式は60進数）</td></tr>
+        <tr><td>4</td><td>該当月のみ</td><td>人（所長承認）</td><td>昇給・入退社などのマスタ変更をOS給与の画面で実施（CCが対象一覧を出す）</td></tr>
+        <tr><td>5</td><td>計算後</td><td>スタッフ→CC</td><td>支給控除一覧表を置いてチェックを依頼。アラート一覧が出力される</td></tr>
+        <tr class="pick"><td>6</td><td>チェック後</td><td>スタッフ＋所長</td><td>🔴を全件潰す・照会事項に回答（来月以降に効く回答は所長承認必須）。直したら再計算→再チェック</td></tr>
+        <tr><td>7</td><td>最後</td><td>所長</td><td>🔴ゼロ＋照会全回答を確認して確定・納品。台帳の月次記録・有給管理簿・消込が更新される</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2><span class="num">05</span>アラート帳票の読み方と確定条件</h2>
+    <p class="sub">アラート一覧には2つのシートがあります。シート1が機械の検出、シート2が「教えてください」リストです。</p>
+    <figure>
+      <img src="images/concept-05-01.png" alt="アラートの読み方と確定条件（グラレコ）">
+      <figcaption>アラート4記号と確定の関所。🔴ゼロ＋照会全回答で通過</figcaption>
+    </figure>
+    <table class="table">
+      <thead><tr><th>記号</th><th>意味</th><th>スタッフの動き</th></tr></thead>
+      <tbody>
+        <tr class="pick"><td>🔴 要対応</td><td>給与が間違っている可能性。内容欄に「何を・なぜ・どうすれば」が書いてある</td><td><b>全件「完了」になるまで絶対に確定しない。</b>読んでも判断できなければ「エスカレーション」にして所長へ</td></tr>
+        <tr><td>🟡 注意</td><td>確認すればよいもの（例: データ不足で一部の判定が保留）</td><td>内容を確認し、必要なら補完・所長相談</td></tr>
+        <tr><td>📋 未整備</td><td>台帳側のデータ不足（チェックがまだ効かせられない項目）</td><td>手が空いたときに整備。増減は所長が把握</td></tr>
+        <tr><td>ℹ️ 参考</td><td>機械が「問題なし」と判断した根拠の記録</td><td>読む必要が出たときだけ見ればOK</td></tr>
+      </tbody>
+    </table>
+    <p><b>シート2「照会事項」</b>は、先月と違う点のうちシートに事前登録がなかったもの。顧客・所内に確認して回答と根拠を記入し、確認が取れたら<b>変動事項シートにも登録</b>します（来月から自動照合に変わります）。昇給・入退社・休職・育休など<b>来月以降にも影響する回答は所長の承認が必須</b>です。</p>
+    <div class="callout"><p><strong>確定の条件 = 🔴ゼロ ＋ 照会全回答。</strong>照会への回答は当月の検証の代わりにはなりません。あくまで「来月から正しく守るための取り込み」です。</p></div>
+  </section>
+
+  <section>
+    <h2><span class="num">06</span>機械が毎月守っている11の目</h2>
+    <p class="sub">スタッフが暗記する必要はありません。「これだけのことが毎月自動で検査されている」という安心のための一覧です。</p>
+    <figure>
+      <img src="images/concept-06-01.png" alt="機械が毎月守っている11の目（グラレコ）">
+      <figcaption>機械が毎月守っている11の目。法改正・料率改定もカレンダーで監視</figcaption>
+    </figure>
+    <table class="table">
+      <thead><tr><th>チェック</th><th>守っていること</th></tr></thead>
+      <tbody>
+        <tr><td>変動事項の照合</td><td>シートに書かれた予定（昇給後の金額など）が、実際の給与に金額どおり反映されたか。消込漏れも検出</td></tr>
+        <tr><td>前月差分</td><td>先月と違う点がすべてシートの登録で説明できるか。<b>説明できない差異＝ミスの候補</b>として🔴に</td></tr>
+        <tr><td>残業単価・残業手当</td><td>賃金規程どおりの単価か。月60時間を超えた残業の5割増しまで検算</td></tr>
+        <tr><td>随時改定（月変）</td><td>昇給・手当変更など固定給の変化を3ヶ月監視し、社会保険の等級変更（月額変更届）の漏れを検出</td></tr>
+        <tr><td>定時決定（算定）</td><td>毎年9月の標準報酬の一斉切り替えが、決定通知どおり台帳と控除に反映されたか</td></tr>
+        <tr><td>社会保険料</td><td>健保・介護・厚年・雇用保険を1円単位で再計算。入社月・退職月の特別ルール、40/65/70/75歳の年齢到達も監視</td></tr>
+        <tr><td>住民税</td><td>税額通知どおりの月割か。6月の年度切替、退職時の一括徴収ルールまで検算</td></tr>
+        <tr><td>所得税の区分</td><td>扶養控除等申告書の提出状況と甲欄・乙欄の整合</td></tr>
+        <tr><td>料率の鮮度</td><td>健保・介護（3月）・雇用保険（4月）・最低賃金（10月）の改定を更新し忘れていないか</td></tr>
+        <tr><td>最低賃金・36協定</td><td>実質時給が最低賃金を下回っていないか。残業時間が法律の上限（月45時間・単月100時間など）を超えていないか</td></tr>
+        <tr><td>差引・振込合計</td><td>支給−控除＝差引支給額、全員の差引合計＝振込データ合計。計算が正しくても起きる「振込段の転記ミス」を検出</td></tr>
+      </tbody>
+    </table>
+    <p>これらの検査項目は法令の条文と照合した正本（給与確定前チェック項目台帳）で管理されており、新しい落とし穴が見つかるたびに追加されていきます。</p>
+  </section>
+
+  <section>
+    <h2><span class="num">07</span>やってはいけないこと・この仕組みの考え方</h2>
+    <p class="sub">禁止事項は4つだけ。どれも「機械が守れなくなる」行為です。</p>
+    <div class="callout warn">
+      <p><strong>① 🔴が残ったまま確定しない</strong>（🔴は「給与が間違っているかもしれない」のサイン）</p>
+      <p><strong>② 台帳ファイルを直接編集しない</strong>（更新は必ずシート→CC経由）</p>
+      <p><strong>③ シートに書かずに口頭・記憶で処理しない</strong>（書かれない変化は検証されない）</p>
+      <p><strong>④ アラートの意味が分からないまま「完了」にしない</strong>（分からなければエスカレーション。それが正しい操作）</p>
+    </div>
+    <div class="quote">機械が判断に迷うものは、推測せずに止まって人に返します。止まったら人の出番。これは故障ではなく仕様です。</div>
+    <p>この仕組みがこうなっている理由は3つです。①給与のミスは「転記」と「突合」で起きるので、そこから人を外す。②チェックは「先月との差分」で見る — 差分がすべてシートで説明できれば給与は正しい。③新しい例外に出会ったら、その場しのぎにせず仕組みに取り込む — だから<b>困ったこと・違和感は必ず報告してください</b>。翌月からは機械が代わりに見張ってくれるようになります。</p>
+  </section>
+
+  <div class="conclusion">
+    <h2>結論</h2>
+    <ol>
+      <li>迷ったら「シートに書いて所長へ相談」。それだけで機械が守れる形になります</li>
+      <li>アラートは人を責めるものではなく、確定前に間違いを見つけるための味方です</li>
+      <li>新しい例外・困りごとは必ず報告 → 仕組み側に取り込まれて、毎月すこしずつ賢くなります</li>
+    </ol>
+  </div>
+
+  <footer>正本: 給与計算ハーネス docs/月次運用フロー.md・給与検証スキーマ.md・給与確定前チェック項目台帳.md（2026-08-16 生成）</footer>
+
+</div>
+</body>
+</html>
