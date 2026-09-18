@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>顧問先への初回導入 手順書</title>
+<style>
+  :root {
+    --ink: #1a1a1a; --ink-2: #4a4a4a; --bg: #f7f5ee; --paper: #fbf9f1; --line: #d8d2bf;
+    --accent: #2b6cb0; --accent-soft: #dbe7f3; --warn: #c83a2c; --warn-soft: #f6dcd6; --yellow: #f4d35e;
+    --green: #3d7a4a; --green-soft: #e0eddc;
+    --shadow: 0 1px 0 rgba(0,0,0,.04), 0 8px 24px rgba(0,0,0,.06);
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Noto Sans JP", "Yu Gothic", "Meiryo", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { font-family: var(--sans); background: var(--bg); color: var(--ink); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 48px 16px 96px; }
+  .kicker { display: inline-block; background: var(--green); color: #fff; font-size: 12px; font-weight: 700; letter-spacing: .12em; padding: 6px 12px; border-radius: 999px; margin-bottom: 18px; }
+  h1 { font-size: 30px; line-height: 1.4; margin: 0 0 8px; letter-spacing: -.01em; }
+  h1 b { color: var(--green); }
+  p.lede { font-size: 16px; color: var(--ink-2); margin: 0 0 28px; }
+  .tldr { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); padding: 18px 22px; margin: 0 0 32px; }
+  .tldr h2 { font-size: 13px; letter-spacing: .15em; color: var(--green); margin: 0 0 10px; }
+  .tldr ol { margin: 0; padding-left: 20px; } .tldr li { margin: 4px 0; }
+  .tabs { margin-top: 8px; }
+  .tabs > input { position: absolute; opacity: 0; pointer-events: none; }
+  .tabbar { display: flex; flex-wrap: wrap; gap: 6px; border-bottom: 2px solid var(--line); }
+  .tabbar label { cursor: pointer; padding: 10px 13px; border: 1px solid var(--line); border-bottom: 0; border-radius: 10px 10px 0 0; background: #efeadb; font-size: 14px; font-weight: 700; color: var(--ink-2); user-select: none; }
+  .tabbar label:hover { background: #e7e1cf; }
+  .panel { display: none; background: var(--paper); border: 1px solid var(--line); border-top: 0; border-radius: 0 0 14px 14px; box-shadow: var(--shadow); padding: 26px 26px 30px; }
+  #t1:checked ~ .tabbar label[for="t1"], #t2:checked ~ .tabbar label[for="t2"], #t3:checked ~ .tabbar label[for="t3"],
+  #t4:checked ~ .tabbar label[for="t4"], #t5:checked ~ .tabbar label[for="t5"], #t6:checked ~ .tabbar label[for="t6"],
+  #t7:checked ~ .tabbar label[for="t7"], #t8:checked ~ .tabbar label[for="t8"], #t9:checked ~ .tabbar label[for="t9"] { background: var(--paper); color: var(--green); position: relative; top: 2px; }
+  #t1:checked ~ .p1, #t2:checked ~ .p2, #t3:checked ~ .p3, #t4:checked ~ .p4, #t5:checked ~ .p5, #t6:checked ~ .p6, #t7:checked ~ .p7, #t8:checked ~ .p8, #t9:checked ~ .p9 { display: block; }
+  .panel h2 { font-size: 20px; margin: 0 0 6px; }
+  .panel p.who { font-size: 13px; color: var(--ink-2); margin: 0 0 14px; }
+  .panel p.who b { color: var(--green); }
+  .panel h3 { font-size: 15px; margin: 22px 0 8px; color: var(--green); }
+  .panel p { margin: 0 0 10px; }
+  .panel ul, .panel ol { margin: 0 0 10px; padding-left: 20px; } .panel li { margin: 4px 0; }
+  .table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 10px 0 14px; }
+  .table th, .table td { border-bottom: 1px solid var(--line); padding: 9px 10px; text-align: left; vertical-align: top; }
+  .table th { background: #efeadb; font-weight: 700; white-space: nowrap; }
+  .callout { margin: 14px 0; padding: 14px 16px; border-left: 4px solid var(--accent); background: var(--accent-soft); border-radius: 0 10px 10px 0; }
+  .callout.warn { border-color: var(--warn); background: var(--warn-soft); }
+  .callout.ok { border-color: var(--green); background: var(--green-soft); }
+  .callout p { margin: 0; } .callout strong { color: var(--accent); } .callout.warn strong { color: var(--warn); } .callout.ok strong { color: var(--green); }
+  .quote { border-left: 3px solid var(--line); padding: 6px 16px; color: var(--ink-2); font-size: 15px; margin: 12px 0; }
+  code { font-family: var(--mono); font-size: 13px; background: #efeadb; padding: 1px 6px; border-radius: 4px; }
+  .flow { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 6px; }
+  .flow .step { flex: 1 1 150px; background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+  .flow .step .no { display: inline-block; background: var(--green); color: #fff; font-size: 11px; font-weight: 700; padding: 1px 8px; border-radius: 999px; margin-bottom: 4px; }
+  .flow .step .who { font-size: 11px; color: var(--ink-2); }
+  .flow .step .what { font-size: 13.5px; font-weight: 700; line-height: 1.45; }
+  .check li { list-style: none; margin: 6px 0; padding-left: 28px; position: relative; }
+  .check li::before { content: "☐"; position: absolute; left: 4px; top: 0; color: var(--green); font-weight: 700; }
+  .nav { margin: 28px 0 0; font-size: 14px; } .nav a { color: var(--accent); }
+  footer { margin-top: 40px; color: var(--ink-2); font-size: 13px; }
+  @media (max-width: 600px) { .panel { padding: 18px 14px 22px; } .tabbar label { padding: 8px 10px; font-size: 13px; } h1 { font-size: 24px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="kicker">導入編</span>
+  <h1>顧問先にハーネスを<b>初めて展開する</b>ときの手順</h1>
+  <p class="lede">新しい顧問先の給与計算をハーネスに乗せるときの進め方です。所長がフォルダと仕組みを用意し、担当スタッフがヒアリングから運用開始までを進めます。項目ごとのタブで読めます。</p>
+
+  <div class="tldr">
+    <h2>まずこれだけ</h2>
+    <ol>
+      <li>流れは <b>事前確認 → 準備（所長）→ ヒアリング → 会社設定 → 従業員台帳 → バックテスト → レビュー → 運用開始</b> の8段階。</li>
+      <li>スタッフの担当は<b>ヒアリング以降ほぼ全部</b>。会社設定（config）も CC に頼んで自分で進めてよい。迷う値だけ所長へ。</li>
+      <li>「完了」は言葉ではなく<b>事実</b>で判定する。バックテスト月の🔴ゼロ、確認事項の回答済み、承認記録あり、が揃ったら運用開始。</li>
+    </ol>
+  </div>
+
+  <div class="tabs">
+    <input type="radio" name="tab" id="t1" checked>
+    <input type="radio" name="tab" id="t2"><input type="radio" name="tab" id="t3"><input type="radio" name="tab" id="t4">
+    <input type="radio" name="tab" id="t5"><input type="radio" name="tab" id="t6"><input type="radio" name="tab" id="t7">
+    <input type="radio" name="tab" id="t8"><input type="radio" name="tab" id="t9">
+    <div class="tabbar">
+      <label for="t1">① 全体の流れ</label>
+      <label for="t2">② 事前確認</label>
+      <label for="t3">③ 準備（所長）</label>
+      <label for="t4">④ ヒアリング</label>
+      <label for="t5">⑤ 会社設定</label>
+      <label for="t6">⑥ 従業員台帳</label>
+      <label for="t7">⑦ バックテスト</label>
+      <label for="t8">⑧ レビューと運用開始</label>
+      <label for="t9">⑨ 完了チェック</label>
+    </div>
+
+    <div class="panel p1">
+      <h2>全体の流れ — 8段階</h2>
+      <p class="who">目安: 小規模（〜20名）で1〜2週間、中規模（〜100名）で1ヶ月分の実績を跨ぐまで</p>
+      <div class="flow">
+        <div class="step"><span class="no">1</span><div class="who">所長＋スタッフ</div><div class="what">事前確認（Go/No-Go）</div></div>
+        <div class="step"><span class="no">2</span><div class="who">所長</div><div class="what">フォルダと仕組みの準備・配布</div></div>
+        <div class="step"><span class="no">3</span><div class="who">スタッフ＋CC</div><div class="what">構造ヒアリング</div></div>
+        <div class="step"><span class="no">4</span><div class="who">スタッフ＋CC</div><div class="what">会社設定（config）の確定</div></div>
+        <div class="step"><span class="no">5</span><div class="who">スタッフ＋CC</div><div class="what">従業員台帳の作成</div></div>
+        <div class="step"><span class="no">6</span><div class="who">スタッフ＋CC</div><div class="what">1ヶ月分のバックテスト</div></div>
+        <div class="step"><span class="no">7</span><div class="who">所長（＋独立レビュー）</div><div class="what">レビュー</div></div>
+        <div class="step"><span class="no">8</span><div class="who">スタッフ</div><div class="what">運用開始（月次運用フローへ）</div></div>
+      </div>
+      <table class="table">
+        <thead><tr><th>段階</th><th>できあがるもの</th><th>次へ進む条件</th></tr></thead>
+        <tbody>
+          <tr><td>1 事前確認</td><td>4つの Go/No-Go の回答</td><td>「config 追加だけでは済まない」項目があれば所長へ報告してから</td></tr>
+          <tr><td>2 準備</td><td>会社フォルダ・台帳フォルダ・CLAUDE.md・入力シート</td><td>フォルダで Claude Code が起動し、会社名が正しく表示される</td></tr>
+          <tr><td>3 ヒアリング</td><td>ヒアリングシート（不明は空欄可）</td><td>§A の会社基本情報が埋まっている</td></tr>
+          <tr><td>4 会社設定</td><td>config の「要確認」が消えた状態</td><td>チェックを回して📋要確認がゼロ</td></tr>
+          <tr><td>5 従業員台帳</td><td>employees/ に全員分</td><td>台帳の🔴（型・必須項目）がゼロ</td></tr>
+          <tr><td>6 バックテスト</td><td>直近1ヶ月の支給控除一覧と台帳の突合</td><td>「説明できない差異」がゼロ。会社ルールが config に固まる</td></tr>
+          <tr><td>7 レビュー</td><td>レビュー結果（軽量／重量）</td><td>PASS。指摘は反映済み</td></tr>
+          <tr><td>8 運用開始</td><td>月次運用フローどおりの初月</td><td>初月の🔴ゼロ＋照会全回答で確定・納品</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="panel p2">
+      <h2>事前確認 — Go/No-Go の4項目</h2>
+      <p class="who">担当: <b>所長＋スタッフ</b>（顧問契約の情報や先方への確認で埋める）</p>
+      <p>ハーネスには既知の制限があります。次の4つは最初に確認し、当てはまるものがあれば所長へ報告してから進めます。</p>
+      <table class="table">
+        <thead><tr><th>#</th><th>確認すること</th><th>ハーネス側の事情</th></tr></thead>
+        <tbody>
+          <tr><td>0-1</td><td>給与システムはオフィスステーション給与か</td><td>取込テンプレと支給控除一覧表の仕様が OS給与前提。他社なら所長へ明示報告</td></tr>
+          <tr><td>0-2</td><td>社保料の控除は翌月控除か</td><td>当月控除は未対応。当月控除ならエンジン側の対応が先</td></tr>
+          <tr><td>0-3</td><td>変形労働時間制はあるか（1ヶ月単位／1年単位／シフト制）</td><td>枠の突合は未実装。ありなら、実装が先か当面手動確認かを所長が判断</td></tr>
+          <tr><td>0-4</td><td>勤怠ツールは何か。CSV等で出せるか</td><td>勤怠取込の入力形式が決まる。紙・Excel なら入力動線の設計が別途必要（樹尚会の例: KOT CSV＋手修正PDF）</td></tr>
+        </tbody>
+      </table>
+      <div class="callout warn"><p><strong>報告義務:</strong> 「会社設定（config）を足すだけでは済まず、エンジンの拡張が必要」と分かった時点で、黙って進めず所長へ報告します。これは §5.5 の決まりです。</p></div>
+    </div>
+
+    <div class="panel p3">
+      <h2>準備 — フォルダと仕組みの配布</h2>
+      <p class="who">担当: <b>所長</b>（スタッフはこの段階では待つ。終わったら確認だけ）</p>
+      <p>所長が開発正本から配布スクリプトでハーネスを配置します。手作業のコピーはしません。1社1フォルダで、法人が複数ある顧問先は法人ごとに台帳を分けます（例: 樹尚会／コンタクト、Nwork／Kwork）。</p>
+      <h3>できあがるもの（スタッフの確認ポイント）</h3>
+      <ul class="check">
+        <li>顧問先フォルダの <code>07.給与・賞与</code> に <code>CLAUDE.md</code> がある（ここで Claude Code を起動する）</li>
+        <li>同じ階層に <code>◯◯-payroll-db</code>（台帳フォルダ）がある。中に <code>config/</code>・<code>events.yaml</code>・<code>monthly/</code>・<code>employees/</code>・<code>変動事項入力シート.xlsx</code></li>
+        <li>同じ階層に <code>オンボード_構造ヒアリング.md</code>（ヒアリング様式）と <code>月次運用フロー.md</code> がある</li>
+        <li>Claude Code を起動して、画面のフォルダ名が正しい会社になっている（初回は「信頼する」を選ぶ）</li>
+      </ul>
+      <div class="callout"><p><strong>権限:</strong> スタッフの Claude Code はエンジン（scripts/）だけ編集できない設定です。会社設定（config）・従業員台帳・入力シート・月次記録はスタッフの裁量で更新できます。</p></div>
+    </div>
+
+    <div class="panel p4">
+      <h2>ヒアリング — 構造ヒアリングシートを CC と埋める</h2>
+      <p class="who">担当: <b>スタッフ＋CC</b>／所要: 30〜60分（先方確認を除く）</p>
+      <p>door で Claude Code を起動し、「<b>◯◯社のオンボードを始めます。オンボード_構造ヒアリング.md を一緒に埋めて</b>」と伝えます。CC が質問形式で聞いてくるので、分かる範囲で答えます。<b>不明は空欄で構いません</b>（バックテストで確定します）。</p>
+      <table class="table">
+        <thead><tr><th>節</th><th>聞くこと</th><th>使い道</th></tr></thead>
+        <tbody>
+          <tr><td>§A 会社基本情報</td><td>都道府県、月平均所定労働時間、割増賃金の算定基礎に含める手当、固定的賃金の項目、毎月変動する項目、雇用保険の事業区分、36協定の特別条項、時間集計と単価の丸め、賃金規程の入手状況</td><td>そのまま会社設定（company.yaml）になる</td></tr>
+          <tr><td>§B 規模と構成</td><td>人数、雇用形態の内訳、支給グループ数、締め日・支給日、社保・雇保の加入比率</td><td>アラート量の見込みと台帳作成の段取り</td></tr>
+          <tr><td>§C 勤怠・労働時間制度</td><td>固定残業の対象と時間、所定労働時間のパターン数、法定内残業の扱い、深夜・休日の頻度</td><td>残業単価チェックの設定</td></tr>
+          <tr><td>§D 月あたりの変動事象</td><td>入退社・昇給・歩合・立替・休職・賞与の頻度</td><td>照会ループの負荷と賞与月の扱い</td></tr>
+          <tr><td>§E 税・保険の構造</td><td>住民税の納付先数、乙欄の人数、等級分布、介護保険該当者、健保の種類（協会けんぽ／組合）</td><td>料率と住民税チェックの設定</td></tr>
+          <tr><td>§F 現行工程とデータ受領</td><td>勤怠データの形式と受領日、変動連絡の受け方、現在の工数、担当者、過去のヒヤリ</td><td>月次運用フローの当てはめ</td></tr>
+          <tr><td>§G バックテスト素材</td><td>直近確定月の勤怠エクスポート、取込CSV、支給控除一覧表、従業員マスタ、住民税通知、標準報酬決定通知の有無</td><td>手順⑥の準備</td></tr>
+        </tbody>
+      </table>
+      <div class="callout"><p><strong>賃金規程・就業規則は必ず入手します。</strong>割増の算定基礎や固定的賃金の根拠はここにしかありません。未確立の会社は「法令チェックのみ・会社ルールチェックは保留」と設定に明記し、規程整備は別案件として切り出します。</p></div>
+    </div>
+
+    <div class="panel p5">
+      <h2>会社設定 — config の「要確認」を消す</h2>
+      <p class="who">担当: <b>スタッフ＋CC</b>（値の解釈に迷うときだけ所長）</p>
+      <p>台帳の <code>config/company.yaml</code> と <code>config/common.yaml</code> は、配置時に「要確認」の印つきで生成されています。CC に「<b>会社設定の要確認を一緒に潰して</b>」と頼み、一次資料を渡しながら確定していきます。編集は CC がします。</p>
+      <table class="table">
+        <thead><tr><th>設定</th><th>一次資料</th><th>注意</th></tr></thead>
+        <tbody>
+          <tr><td>都道府県・健保料率・介護保険料率</td><td>協会けんぽの保険料額表（該当支部・年度）</td><td>生成時は熊本支部の値。福岡など他県は差し替える</td></tr>
+          <tr><td>雇用保険料率・事業区分</td><td>厚労省の年度料率表</td><td>一般／農林水産・清酒／建設</td></tr>
+          <tr><td>最低賃金</td><td>都道府県の最低賃金（発効日つき）</td><td>拠点が複数県なら従業員側の勤務地で上書きできる</td></tr>
+          <tr><td>締め日・支給日・保険料控除タイミング</td><td>賃金規程、支給控除一覧と納入告知書の月ずれ</td><td>翌月控除が前提</td></tr>
+          <tr><td>月平均所定労働時間・割増の算定基礎・丸め</td><td>賃金規程・就業規則</td><td>ヒアリング §A の答えをそのまま</td></tr>
+          <tr><td>36協定（特別条項の有無）</td><td>36協定届</td><td>上限チェックの閾値になる</td></tr>
+          <tr><td>権限モデル開始月</td><td>運用開始月</td><td>承認ゲートと必須項目検証の適用開始月</td></tr>
+        </tbody>
+      </table>
+      <p>確定できたら CC に「<b>チェックを回して</b>」と頼み、📋の「要確認」スキャンがゼロになるまで繰り返します。</p>
+      <div class="callout warn"><p><strong>法令・通達に根拠がある値の解釈（例: どの手当を割増基礎に含めるか）で迷ったら所長へ。</strong>設定を変える権限はありますが、判断の責任まで一人で抱えないでください。</p></div>
+    </div>
+
+    <div class="panel p6">
+      <h2>従業員台帳 — employees/ を全員分つくる</h2>
+      <p class="who">担当: <b>スタッフ＋CC</b>（所長の事前確認は不要。不備は機械が止める）</p>
+      <p>元資料を台帳フォルダに置き、CC に「<b>この資料から従業員台帳を作って</b>」と頼みます。CC が employees/ に1人1ファイルで作り、型・値域・必須項目を機械チェックします。</p>
+      <h3>元資料（あるものから）</h3>
+      <ul>
+        <li>給与ソフトの従業員マスタ（氏名・給与・社保情報の一覧）。過去データの移行なら前システムのエクスポート</li>
+        <li>賃金テーブル、労働条件通知書・雇用契約書</li>
+        <li>標準報酬月額の決定通知（直近の算定・月変）、住民税の特別徴収税額通知、扶養控除等申告書の提出状況</li>
+        <li>有給休暇管理簿（付与・取得・残日数）</li>
+      </ul>
+      <h3>できあがりの確認</h3>
+      <ul class="check">
+        <li>人数がマスタと一致している（役員・非加入者も含む）</li>
+        <li>チェックを回して、台帳の🔴（型・値域・必須項目）がゼロ</li>
+        <li>入力シートの従業員ドロップダウンに全員が出る（次の取込で自動更新）</li>
+        <li>個人番号（マイナンバー）や健康情報は台帳に入れていない</li>
+      </ul>
+      <div class="callout"><p><strong>途中入社・退職済みの人:</strong> 直近月に支給がある人は必ず入れます。退職者は削除せず、状態を「退職」にして残します（源泉徴収票・離職票の根拠になるため）。</p></div>
+    </div>
+
+    <div class="panel p7">
+      <h2>バックテスト — 直近1ヶ月分で定義を確定する</h2>
+      <p class="who">担当: <b>スタッフ＋CC</b>／素材: ヒアリング §G</p>
+      <ol>
+        <li>直近の確定済み月を選ぶ（例: 前月分）。その月の<b>給与支給控除一覧表</b>を台帳フォルダに置く。</li>
+        <li>CC に「<b>◯月分の支給控除一覧を monthly に転記して、チェックを回して</b>」と頼む。</li>
+        <li>出てきた🔴を3つに切り分ける: <b>設定の誤り</b>（会社ルールの読み違い→config を直す）／<b>台帳の誤り</b>（マスタの写し間違い→台帳を直す）／<b>実際のミス</b>（過去の給与の誤り→所長へ報告）。</li>
+        <li>「説明できない差異」がゼロになるまで繰り返す。これで会社ルールの定義が確定する。</li>
+        <li>勤怠取込がある会社は、勤怠エクスポートから取込データを作り、給与ソフトの実績と突合する（残業時間などの差分が出れば原因を特定）。</li>
+      </ol>
+      <div class="callout ok"><p><strong>ここが一番の山です。</strong>樹尚会の例では、賃金規程の逆算（一段計算・切上げ・164h・算定基礎）で51名全員一致するまで詰め、規程に書かれていない手当の性質は所長へ論点として上げました。1ヶ月分で定義が固まれば、以後は月次の照会ループが残りの個別事情を拾います。</p></div>
+      <div class="callout warn"><p><strong>config を足すだけでは説明できない差異が残るとき</strong>（例: 独自の日割計算、特殊な手当ロジック）は、エンジン拡張が必要な可能性があります。ここで所長へ報告します。</p></div>
+    </div>
+
+    <div class="panel p8">
+      <h2>レビューと運用開始</h2>
+      <p class="who">担当: <b>所長（＋独立レビュー）</b>→ 運用開始後は <b>スタッフ</b></p>
+      <h3>レビューは2段階</h3>
+      <table class="table">
+        <thead><tr><th>種類</th><th>条件</th><th>見るところ</th></tr></thead>
+        <tbody>
+          <tr><td>軽量レビュー</td><td>会社設定（config）だけで完結した</td><td>ヒアリングの反映漏れ、バックテストの結果、全社共通に昇格すべきルールの見落とし</td></tr>
+          <tr><td>重量レビュー</td><td>エンジンの拡張コードが必要になった</td><td>拡張が共通コアから物理的に分離されているか（必須ゲート）、専用の回帰テストがあるか</td></tr>
+        </tbody>
+      </table>
+      <p>挿入位置はバックテストが確定した直後、運用開始の直前です。</p>
+      <h3>運用開始</h3>
+      <ul>
+        <li>初月から <a href="../payroll-harness/">仕組み編</a>の月次7ステップどおりに回します。変動は入力シートの該当タブへ、チェックは「今月の給与チェックして」。</li>
+        <li>初月は照会事項が多めに出ます。回答して入力シートに登録すると、翌月から自動照合に変わります。</li>
+        <li>会社固有の判断・見つかった誤り・先方からの指摘は「判断の書庫」に入れます（顧問先名や論点は入れてよい。個人の給与額や属性は入れない）。</li>
+      </ul>
+    </div>
+
+    <div class="panel p9">
+      <h2>完了チェック — 事実で判定する</h2>
+      <p class="who">「完了しました」の言葉ではなく、次が揃っていることを確認します</p>
+      <h3>準備・設定</h3>
+      <ul class="check">
+        <li>door（07.給与・賞与）で Claude Code が起動し、会社名が正しく出る</li>
+        <li>config の「要確認」がゼロ（チェックの📋に出ない）</li>
+        <li>権限モデル開始月が設定されている</li>
+      </ul>
+      <h3>台帳</h3>
+      <ul class="check">
+        <li>employees/ が全員分あり、台帳の🔴がゼロ</li>
+        <li>入力シート（v2）が台帳直下にあり、ドロップダウンに全員が出る</li>
+        <li>有給管理簿の整備方針が決まっている（未整備なら📋として残す）</li>
+      </ul>
+      <h3>バックテスト・レビュー</h3>
+      <ul class="check">
+        <li>直近1ヶ月分で「説明できない差異」がゼロ</li>
+        <li>残った論点は <code>確認事項.md</code> に回答欄つきで一覧化され、所長の回答が入っている</li>
+        <li>レビュー（軽量／重量）が PASS。拡張コードがあるなら所長へ報告済み</li>
+      </ul>
+      <h3>運用</h3>
+      <ul class="check">
+        <li>初月の🔴ゼロ＋照会全回答で確定・納品できた</li>
+        <li>担当スタッフが決まり、door の CLAUDE.md に顧客固有事項（締め日・照会先・未確立事項）が書かれている</li>
+      </ul>
+      <div class="callout ok"><p><strong>ここまで揃えば導入完了です。</strong>以後の改善は月次の照会ループと昇格ラダー（同じ照会が2回来たらルール化）で進みます。</p></div>
+    </div>
+  </div>
+
+  <p class="nav">関連: <a href="../payroll-harness/">仕組み編（運用ガイド）</a>／<a href="../claude-code-manual/">操作編（Claude Code マニュアル）</a>／<a href="../announcements/2026-09-v2/">お知らせ（入力シート v2）</a>／<a href="../">目次へ戻る</a></p>
+  <footer>正本: 給与計算ハーネス docs/全体地図_対応方針.md §5.5（新規顧問先オンボード標準手順）・§5.6（権限モデル）・オンボード02_構造ヒアリング.md｜2026-09-18 公開</footer>
+</div>
+</body>
+</html>
