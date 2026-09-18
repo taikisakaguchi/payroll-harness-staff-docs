@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>入力シート v2 導入のご案内</title>
+<style>
+  :root {
+    --ink: #1a1a1a; --ink-2: #4a4a4a; --bg: #f7f5ee; --paper: #fbf9f1; --line: #d8d2bf;
+    --accent: #2b6cb0; --accent-soft: #dbe7f3; --warn: #c83a2c; --warn-soft: #f6dcd6; --yellow: #f4d35e;
+    --terra: #cc785c;
+    --shadow: 0 1px 0 rgba(0,0,0,.04), 0 8px 24px rgba(0,0,0,.06);
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Noto Sans JP", "Yu Gothic", "Meiryo", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { font-family: var(--sans); background: var(--bg); color: var(--ink); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 48px 16px 96px; }
+  .kicker { display: inline-block; background: var(--terra); color: #fff; font-size: 12px; font-weight: 700; letter-spacing: .12em; padding: 6px 12px; border-radius: 999px; margin-bottom: 18px; }
+  h1 { font-size: 30px; line-height: 1.4; margin: 0 0 8px; letter-spacing: -.01em; }
+  h1 b { color: var(--terra); }
+  p.lede { font-size: 16px; color: var(--ink-2); margin: 0 0 12px; }
+  p.date { font-size: 13px; color: var(--ink-2); margin: 0 0 28px; }
+  .tldr { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); padding: 18px 22px; margin: 0 0 32px; }
+  .tldr h2 { font-size: 13px; letter-spacing: .15em; color: var(--terra); margin: 0 0 10px; }
+  .tldr ol { margin: 0; padding-left: 20px; } .tldr li { margin: 4px 0; }
+
+  /* タブ（JS 不要。ラジオボタンで切替） */
+  .tabs { margin-top: 8px; }
+  .tabs > input { position: absolute; opacity: 0; pointer-events: none; }
+  .tabbar { display: flex; flex-wrap: wrap; gap: 6px; border-bottom: 2px solid var(--line); padding-bottom: 0; margin-bottom: 0; }
+  .tabbar label { cursor: pointer; padding: 10px 14px; border: 1px solid var(--line); border-bottom: 0; border-radius: 10px 10px 0 0; background: #efeadb; font-size: 14px; font-weight: 700; color: var(--ink-2); user-select: none; }
+  .tabbar label:hover { background: #e7e1cf; }
+  .panel { display: none; background: var(--paper); border: 1px solid var(--line); border-top: 0; border-radius: 0 0 14px 14px; box-shadow: var(--shadow); padding: 26px 26px 30px; }
+  #t1:checked ~ .tabbar label[for="t1"], #t2:checked ~ .tabbar label[for="t2"], #t3:checked ~ .tabbar label[for="t3"],
+  #t4:checked ~ .tabbar label[for="t4"], #t5:checked ~ .tabbar label[for="t5"], #t6:checked ~ .tabbar label[for="t6"] { background: var(--paper); color: var(--terra); border-color: var(--line); position: relative; top: 2px; }
+  #t1:checked ~ .p1, #t2:checked ~ .p2, #t3:checked ~ .p3, #t4:checked ~ .p4, #t5:checked ~ .p5, #t6:checked ~ .p6 { display: block; }
+  .panel h2 { font-size: 20px; margin: 0 0 14px; }
+  .panel h3 { font-size: 15px; margin: 22px 0 8px; color: var(--terra); }
+  .panel p { margin: 0 0 10px; }
+  .panel ul, .panel ol { margin: 0 0 10px; padding-left: 20px; } .panel li { margin: 4px 0; }
+  .table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 10px 0 14px; }
+  .table th, .table td { border-bottom: 1px solid var(--line); padding: 9px 10px; text-align: left; vertical-align: top; }
+  .table th { background: #efeadb; font-weight: 700; white-space: nowrap; }
+  .callout { margin: 14px 0; padding: 14px 16px; border-left: 4px solid var(--accent); background: var(--accent-soft); border-radius: 0 10px 10px 0; }
+  .callout.warn { border-color: var(--warn); background: var(--warn-soft); }
+  .callout p { margin: 0; } .callout strong { color: var(--accent); } .callout.warn strong { color: var(--warn); }
+  .quote { border-left: 3px solid var(--line); padding: 6px 16px; color: var(--ink-2); font-size: 15px; margin: 12px 0; }
+  code { font-family: var(--mono); font-size: 13px; background: #efeadb; padding: 1px 6px; border-radius: 4px; }
+  .nav { margin: 28px 0 0; font-size: 14px; } .nav a { color: var(--accent); }
+  footer { margin-top: 40px; color: var(--ink-2); font-size: 13px; }
+  @media (max-width: 600px) { .panel { padding: 18px 14px 22px; } .tabbar label { padding: 8px 10px; font-size: 13px; } h1 { font-size: 24px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="kicker">お知らせ｜2026年9月</span>
+  <h1>変動事項入力シートが<b>「出来事ごとのタブ」</b>に変わりました</h1>
+  <p class="lede">2026年9月18日、全社の台帳に新しい入力シート（v2）を配置しました。書く場所が「1つの表」から「出来事ごとのタブ」に変わります。このページは、初回に確認していただきたいことを項目ごとにまとめたものです。</p>
+  <p class="date">対象: 給与計算を担当する全スタッフ／適用: 2026年9月分の作業から</p>
+
+  <div class="tldr">
+    <h2>3行で</h2>
+    <ol>
+      <li>各台帳の <b>変動事項入力シート.xlsx</b> が新しくなりました。まず「はじめに」タブを読んでください（読めば書けます）。</li>
+      <li>出来事が起きたら<b>該当タブに1行</b>。承認は<b>「内容を確認した人・確認日」列</b>に自分の名前と日付を書くだけ。</li>
+      <li>迷ったら<b>「7.相談・その他」</b>に日本語で書く。それだけで無視されない仕組みになっています。</li>
+    </ol>
+  </div>
+
+  <div class="tabs">
+    <input type="radio" name="tab" id="t1" checked>
+    <input type="radio" name="tab" id="t2">
+    <input type="radio" name="tab" id="t3">
+    <input type="radio" name="tab" id="t4">
+    <input type="radio" name="tab" id="t5">
+    <input type="radio" name="tab" id="t6">
+    <div class="tabbar">
+      <label for="t1">① 何が変わった？</label>
+      <label for="t2">② 初回にやること</label>
+      <label for="t3">③ 書き方</label>
+      <label for="t4">④ 承認・訂正・相談</label>
+      <label for="t5">⑤ チェック結果の見方</label>
+      <label for="t6">⑥ よくある質問</label>
+    </div>
+
+    <div class="panel p1">
+      <h2>何が変わった？</h2>
+      <table class="table">
+        <thead><tr><th></th><th>これまで（v1）</th><th>これから（v2）</th></tr></thead>
+        <tbody>
+          <tr><th>書く場所</th><td>1つの表に「誰・何があった・いつ・金額・日付…」を横並びで</td><td>出来事ごとのタブ（入社／退職／休業／給与の変更／今月だけ／契約・税の変更／相談・その他）に1行</td></tr>
+          <tr><th>書く項目</th><td>種別によって使う列・使わない列を自分で判断</td><td>タブの見出しどおりに埋めるだけ。選べる値はすべてドロップダウン</td></tr>
+          <tr><th>承認</th><td>CC に「◯◯さんの入社、確認したので記録して」と口頭で依頼</td><td>シートの「内容を確認した人・確認日」列に書く。次の取込で台帳に記録される</td></tr>
+          <tr><th>迷ったとき</th><td>シートに書かず所長へ相談</td><td>「7.相談・その他」に日本語で書く。CC と所長が振り分ける（振り分けるまで🔴が残る）</td></tr>
+          <tr><th>直したいとき</th><td>行を書き換える（所長へ）</td><td>行は書き換えず、新しい行＋「訂正対象ID」。履歴が残る</td></tr>
+          <tr><th>機械の判定結果</th><td>アラート一覧.xlsx だけ</td><td>アラート一覧に加えて、入力シートの「8.機械の確認結果」タブにも書き戻される</td></tr>
+        </tbody>
+      </table>
+      <div class="callout"><p><strong>変わらないこと:</strong>「先月と変わることは必ずシートへ」「🔴ゼロになるまで確定しない」「判断に迷うものは所長へ」。仕組みの考え方はそのままで、書く場所が分かりやすくなっただけです。</p></div>
+    </div>
+
+    <div class="panel p2">
+      <h2>初回にやること（5分）</h2>
+      <ol>
+        <li><b>台帳フォルダを開く</b>。各台帳（◯◯-payroll-db）の直下に <code>変動事項入力シート.xlsx</code> があります。これが新しいシートです。</li>
+        <li><b>「はじめに」タブを読む</b>。3つの約束、出来事→タブの決定表、書き方の共通ルールが書いてあります。</li>
+        <li><b>タブを一通り眺める</b>。各タブの1行目に「いつ・何を書くか」、グレーの3行目に記入例があります。記入例は消さなくて大丈夫です。</li>
+        <li><b>以前のシートについて</b>。同じフォルダの <code>変動事項入力シート_v1_旧.xlsx</code> は旧シートの退避です。取込済みの記録用なので、新しい行は書かないでください（未取込の行はない状態で退避しています）。</li>
+        <li><b>従業員のドロップダウン</b>。台帳にいる人だけが出ます。新しく入社する人は「1.入社」に書いて、CC に入社処理を頼むと出るようになります。</li>
+      </ol>
+      <div class="callout warn"><p><strong>まだ従業員台帳ができていない会社（新規オンボード中）</strong>は、ドロップダウンが空です。「1.入社」に書く→CC に「◯◯さんの入社処理して」→取込、の順で増えていきます。</p></div>
+    </div>
+
+    <div class="panel p3">
+      <h2>書き方 — 出来事が起きたら該当タブに1行</h2>
+      <table class="table">
+        <thead><tr><th>出来事</th><th>タブ</th><th>書くこと</th></tr></thead>
+        <tbody>
+          <tr><td>人が入った</td><td>1.入社</td><td>給与ソフトに登録する内容そのもの（雇用形態・給与体系・基本給・手当・社保・雇保・甲乙・扶養・住民税・日割）</td></tr>
+          <tr><td>辞める・亡くなった</td><td>2.退職</td><td>退職日（最終在籍日）・理由・住民税の残り・有給の扱い・退職金</td></tr>
+          <tr><td>休む／戻る（病気・産前産後・育児・介護）</td><td>3.休業</td><td>開始と終了はそれぞれ1行。予定日で書き、終わったら「実際の終了日」を埋める。社保免除の申請状況</td></tr>
+          <tr><td>毎月の給与がこれから先ずっと変わる</td><td>4.給与の変更</td><td>昇給・降給・手当の新設／廃止／額変更・通勤手当。項目名・変更前後・いつの給与から</td></tr>
+          <tr><td>その月だけ払う・引く</td><td>5.今月だけ</td><td>賞与・精算・立替・歩合・休業補償。支給か控除か・金額・対象月</td></tr>
+          <tr><td>決め方や税の設定が変わる</td><td>6.契約・税の変更</td><td>時給↔月給・単価・所定時間・扶養人数・住民税額・甲乙・氏名住所</td></tr>
+          <tr><td>どれか分からない</td><td>7.相談・その他</td><td>日本語でそのまま書く</td></tr>
+        </tbody>
+      </table>
+      <h3>共通ルール</h3>
+      <ul>
+        <li>日付は <code>YYYY-MM-DD</code>、月は <code>YYYY-MM</code>、金額は円（カンマ不要。「1,200円」でも可）。</li>
+        <li>根拠は「いつ・誰から・何で」（例: 2026-08-05 社長メール）。空でも取り込まれますが🟡が残ります。</li>
+        <li>月をまたいでも同じシートに書き足す。月ごとに作り直しません。</li>
+        <li>「取込済ID」列は機械が書きます。触らないでください。</li>
+      </ul>
+      <div class="callout"><p><strong>手当を1ヶ月だけ付けるとき</strong>は「5.今月だけ」ではなく「4.給与の変更」に「手当新設」と翌月の「手当廃止」の2行を書きます。社会保険のルール上、1ヶ月でも固定給の変動として扱うためです。</p></div>
+    </div>
+
+    <div class="panel p4">
+      <h2>承認・訂正・相談</h2>
+      <h3>承認（来月以降にも影響する変動）</h3>
+      <p>入社・退職・休業・給与の変更・契約の変更は、内容を確認した担当者の記録が入るまで🔴「承認待ち」になります。シートの<b>「内容を確認した人」「確認日」</b>の2列に自分の名前と日付を書けば、次の取込で台帳に記録されます。承認者は担当スタッフ本人でよく、判断に迷うものだけ所長へ相談します。</p>
+      <div class="quote">片方だけ（名前だけ・日付だけ）では記録になりません。両方書いてください。</div>
+      <h3>訂正</h3>
+      <p>取込済み（取込済IDが入った）行は書き換えません。直したい内容を<b>新しい行</b>に書き、<b>「訂正対象ID」</b>に元の行の取込済IDを写します。元の行は「取消」として履歴に残り、新しい行は承認をやり直します。取込済みの行を書き換えると取込が🔴で止まります。</p>
+      <h3>相談</h3>
+      <p>どのタブか分からない、種別にない、書き方に迷う。そのときは<b>「7.相談・その他」</b>に日本語でそのまま書いてください。CC と所長が振り分けます。振り分けが終わって「処理済」に○が付くまで🔴が残るので、書いたものが忘れられることはありません。</p>
+    </div>
+
+    <div class="panel p5">
+      <h2>チェック結果の見方</h2>
+      <p>CC に「今月の給与チェックして」と頼むと、これまでどおり <code>アラート一覧_YYYY-MM.xlsx</code> ができます。加えて、入力シートの<b>「8.機械の確認結果」タブ</b>にも🔴🟡📋が書き戻されます。</p>
+      <ul>
+        <li>「8.機械の確認結果」は機械が書くタブです。<b>書き換えないでください。</b></li>
+        <li>対応したら右の2列「対応した人」「対応日」だけ埋めます。次回のチェックでも、同じ内容の行には記入が引き継がれます。</li>
+        <li>解消した行は次回のチェックで消えます。別の月の行はそのまま残ります。</li>
+      </ul>
+      <table class="table">
+        <thead><tr><th>記号</th><th>意味</th><th>動き</th></tr></thead>
+        <tbody>
+          <tr><td>🔴 要対応</td><td>給与が間違っている可能性</td><td>全件解消するまで確定しない。判断できなければ所長へ</td></tr>
+          <tr><td>🟡 注意</td><td>確認すればよいもの（根拠の未記入など）</td><td>内容を確認して補う</td></tr>
+          <tr><td>📋 未整備</td><td>台帳側のデータ不足</td><td>手が空いたときに整備</td></tr>
+        </tbody>
+      </table>
+      <div class="callout"><p><strong>入力シートに書いた変動が正しく反映されたかも機械が見ます。</strong>「4.給与の変更」に書いた金額と給与ソフトの結果が違えば🔴【変動差異】、反映されていなければ🔴【変動未反映】になります。</p></div>
+    </div>
+
+    <div class="panel p6">
+      <h2>よくある質問</h2>
+      <h3>Q. 旧シート（v1）に書いた内容はどうなりますか？</h3>
+      <p>すべて台帳に取込済みです。<code>変動事項入力シート_v1_旧.xlsx</code> として残してあり、記録として見返せます。新しい行は v2 に書いてください。</p>
+      <h3>Q. 間違えて取込済IDを消してしまいました。</h3>
+      <p>そのまま再取込してください。同じ内容の行が台帳にあれば、機械が ID を書き戻します（二重登録はしません）。</p>
+      <h3>Q. 取込が🔴で止まりました。</h3>
+      <p>画面の案内に「◯タブ △行目: …」と理由が出ます。その行を直して、もう一度「入力シートを取り込んで」と頼んでください。不備が1件でもあると、1件も登録しない仕組みです（途中まで登録されることはありません）。</p>
+      <h3>Q. 承認は所長でないとだめですか？</h3>
+      <p>内容を確認した担当スタッフ本人で構いません。目的は「誰がいつ確認したか」を残すことです。判断に迷う内容だけ所長へ相談してください。</p>
+      <h3>Q. 2つの法人がある顧問先では？</h3>
+      <p>法人ごとに台帳とシートが分かれています。書くシートを間違えないよう、フォルダ名（◯◯-payroll-db）を確認してください。CC に頼むときも「Kwork の入力シートを取り込んで」のように法人名を添えると確実です。</p>
+      <h3>Q. 困ったら？</h3>
+      <p>まず CC に聞いてください（「はじめに」タブの内容は CC も知っています）。それでも分からなければ所長へ。「7.相談・その他」に書いておけば、忘れられません。</p>
+    </div>
+  </div>
+
+  <p class="nav">関連: <a href="../../payroll-harness/">仕組み編（運用ガイド）</a>／<a href="../../claude-code-manual/">操作編（Claude Code マニュアル）</a>／<a href="../../">目次へ戻る</a></p>
+  <footer>2026-09-18 公開｜対象: 入力シート v2.0（全台帳配布・版 104c276b1837）</footer>
+</div>
+</body>
+</html>
