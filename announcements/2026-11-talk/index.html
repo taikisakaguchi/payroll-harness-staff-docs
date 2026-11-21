@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>変動事項は CC に伝えるだけ</title>
+<style>
+  :root {
+    --ink: #1a1a1a; --ink-2: #4a4a4a; --bg: #f7f5ee; --paper: #fbf9f1; --line: #d8d2bf;
+    --accent: #2b6cb0; --accent-soft: #dbe7f3; --warn: #c83a2c; --warn-soft: #f6dcd6; --yellow: #f4d35e;
+    --terra: #cc785c;
+    --shadow: 0 1px 0 rgba(0,0,0,.04), 0 8px 24px rgba(0,0,0,.06);
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Noto Sans JP", "Yu Gothic", "Meiryo", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { font-family: var(--sans); background: var(--bg); color: var(--ink); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 48px 16px 96px; }
+  .kicker { display: inline-block; background: var(--terra); color: #fff; font-size: 12px; font-weight: 700; letter-spacing: .12em; padding: 6px 12px; border-radius: 999px; margin-bottom: 18px; }
+  h1 { font-size: 30px; line-height: 1.4; margin: 0 0 8px; letter-spacing: -.01em; }
+  h1 b { color: var(--terra); }
+  p.lede { font-size: 16px; color: var(--ink-2); margin: 0 0 12px; }
+  p.date { font-size: 13px; color: var(--ink-2); margin: 0 0 28px; }
+  .tldr { background: var(--paper); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); padding: 18px 22px; margin: 0 0 32px; }
+  .tldr h2 { font-size: 13px; letter-spacing: .15em; color: var(--terra); margin: 0 0 10px; }
+  .tldr ol { margin: 0; padding-left: 20px; } .tldr li { margin: 4px 0; }
+
+  /* タブ（JS 不要。ラジオボタンで切替） */
+  .tabs { margin-top: 8px; }
+  .tabs > input { position: absolute; opacity: 0; pointer-events: none; }
+  .tabbar { display: flex; flex-wrap: wrap; gap: 6px; border-bottom: 2px solid var(--line); padding-bottom: 0; margin-bottom: 0; }
+  .tabbar label { cursor: pointer; padding: 10px 14px; border: 1px solid var(--line); border-bottom: 0; border-radius: 10px 10px 0 0; background: #efeadb; font-size: 14px; font-weight: 700; color: var(--ink-2); user-select: none; }
+  .tabbar label:hover { background: #e7e1cf; }
+  .panel { display: none; background: var(--paper); border: 1px solid var(--line); border-top: 0; border-radius: 0 0 14px 14px; box-shadow: var(--shadow); padding: 26px 26px 30px; }
+  #t1:checked ~ .tabbar label[for="t1"], #t2:checked ~ .tabbar label[for="t2"], #t3:checked ~ .tabbar label[for="t3"],
+  #t4:checked ~ .tabbar label[for="t4"], #t5:checked ~ .tabbar label[for="t5"], #t6:checked ~ .tabbar label[for="t6"] { background: var(--paper); color: var(--terra); border-color: var(--line); position: relative; top: 2px; }
+  #t1:checked ~ .p1, #t2:checked ~ .p2, #t3:checked ~ .p3, #t4:checked ~ .p4, #t5:checked ~ .p5, #t6:checked ~ .p6 { display: block; }
+  .panel h2 { font-size: 20px; margin: 0 0 14px; }
+  .panel h3 { font-size: 15px; margin: 22px 0 8px; color: var(--terra); }
+  .panel p { margin: 0 0 10px; }
+  .panel ul, .panel ol { margin: 0 0 10px; padding-left: 20px; } .panel li { margin: 4px 0; }
+  .table { width: 100%; border-collapse: collapse; font-size: 14px; margin: 10px 0 14px; }
+  .table th, .table td { border-bottom: 1px solid var(--line); padding: 9px 10px; text-align: left; vertical-align: top; }
+  .table th { background: #efeadb; font-weight: 700; white-space: nowrap; }
+  .callout { margin: 14px 0; padding: 14px 16px; border-left: 4px solid var(--accent); background: var(--accent-soft); border-radius: 0 10px 10px 0; }
+  .callout.warn { border-color: var(--warn); background: var(--warn-soft); }
+  .callout p { margin: 0; } .callout strong { color: var(--accent); } .callout.warn strong { color: var(--warn); }
+  .quote { border-left: 3px solid var(--line); padding: 6px 16px; color: var(--ink-2); font-size: 15px; margin: 12px 0; }
+  code { font-family: var(--mono); font-size: 13px; background: #efeadb; padding: 1px 6px; border-radius: 4px; }
+  .nav { margin: 28px 0 0; font-size: 14px; } .nav a { color: var(--accent); }
+  footer { margin-top: 40px; color: var(--ink-2); font-size: 13px; }
+  @media (max-width: 600px) { .panel { padding: 18px 14px 22px; } .tabbar label { padding: 8px 10px; font-size: 13px; } h1 { font-size: 24px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="kicker">お知らせ｜2026年11月</span>
+  <h1>変動事項は<b>「CC に伝えるだけ」</b>で登録できるようになりました</h1>
+  <p class="lede">2026年11月18日、全社の台帳に新しい入れ方を配りました。昇給・入社・退職・休業・手当・精算などの出来事は、入力シートを開かずに、内容を Claude Code（以下 CC）に伝えるだけで登録できます。給与チェックの🔴を判断で通すとき（受理）も同じです。</p>
+  <p class="date">対象: 給与計算を担当する全スタッフ／適用: 2026年11月分の作業から</p>
+
+  <div class="tldr">
+    <h2>3行で</h2>
+    <ol>
+      <li>出来事が起きたら、<b>内容をそのまま CC に伝えます</b>（メールの貼り付けや PDF でも構いません）。</li>
+      <li>CC が内容を読み上げます。合っていれば<b>「はい」</b>と答えます。そこで初めて登録されます。</li>
+      <li><b>入力シートはなくなりません。</b>伝えた内容はシートにも行として残ります。まとめて入れるときは、これまでどおりシートに書いても構いません。</li>
+    </ol>
+  </div>
+
+  <div class="tabs">
+    <input type="radio" name="tab" id="t1" checked>
+    <input type="radio" name="tab" id="t2">
+    <input type="radio" name="tab" id="t3">
+    <input type="radio" name="tab" id="t4">
+    <input type="radio" name="tab" id="t5">
+    <input type="radio" name="tab" id="t6">
+    <div class="tabbar">
+      <label for="t1">① 何が変わった？</label>
+      <label for="t2">② 伝え方</label>
+      <label for="t3">③「はい」の前に見るところ</label>
+      <label for="t4">④ 承認・訂正・相談</label>
+      <label for="t5">⑤ 🔴の受理</label>
+      <label for="t6">⑥ よくある質問</label>
+    </div>
+
+    <div class="panel p1">
+      <h2>何が変わった？</h2>
+      <table class="table">
+        <thead><tr><th></th><th>これまで</th><th>これから</th></tr></thead>
+        <tbody>
+          <tr><th>入れ方</th><td>入力シートを開き、該当するタブを選んで1行書く。その後、CC に「入力シートを取り込んで」と頼む</td><td>内容を CC に伝える。タブや項目は CC が選ぶ</td></tr>
+          <tr><th>登録の前の確認</th><td>取り込んだ結果を画面で見る</td><td>登録の前に、CC が内容を読み上げる。担当者が「はい」と答えるまで、何も登録されない</td></tr>
+          <tr><th>承認</th><td>シートの「内容を確認した人・確認日」の2列に書く</td><td>確認した人の名前を CC に伝える（あとから伝えてもよい）</td></tr>
+          <tr><th>直したいとき</th><td>新しい行を書き、「訂正対象ID」に元の行のIDを写す</td><td>直したい内容を CC に伝える。元の登録は取消として残る</td></tr>
+          <tr><th>迷ったとき</th><td>「7.相談・その他」に日本語で書く</td><td>迷っていることを、そのまま CC に伝える</td></tr>
+          <tr><th>🔴の受理</th><td>「8.機械の確認結果」に受理・理由・担当者・対応日を書き、「受理を取り込んで」と頼む</td><td>IDと理由を CC に伝える</td></tr>
+          <tr><th>入力シート</th><td>入力する場所</td><td>登録した内容の一覧。同じ種類をまとめて入れるときは、入力する場所としても使える</td></tr>
+        </tbody>
+      </table>
+      <div class="callout"><p><strong>変わらないこと:</strong>「先月と変わることは必ず登録する」「🔴ゼロになるまで確定しない」「判断に迷うものは所長へ」。機械の検査も同じです。CC に伝えた内容は、シートに書いた行と同じ検査を通ります。</p></div>
+    </div>
+
+    <div class="panel p2">
+      <h2>伝え方 — 聞いたことを、そのまま</h2>
+      <p>文の形は自由です。「誰が」「何が」「いつから（いつの給与から）」「いくら」「根拠（いつ・誰から・何で）」が入っていれば、1回で登録できます。足りないことは CC が聞き返します。</p>
+      <table class="table">
+        <thead><tr><th>出来事</th><th>伝え方の例</th></tr></thead>
+        <tbody>
+          <tr><td>昇給</td><td>「給与花子さん、12月分から基本給が 260,000円から 285,000円に昇給。11月10日に社長からメール。確認者は私（担当A）」</td></tr>
+          <tr><td>手当の新設・廃止</td><td>「変動太郎さん、12月分から資格手当 5,000円を新設。根拠は 11月15日の辞令」</td></tr>
+          <tr><td>今月だけの支給・控除</td><td>「立替次郎さんの立替金精算、11月分で 12,800円を支給。出張交通費の立替」</td></tr>
+          <tr><td>退職</td><td>「変動太郎さん、12月31日で退職。自己都合。11月20日に本人から退職届。住民税は一括徴収」</td></tr>
+          <tr><td>休業</td><td>「育休三郎さん、1月10日から育児休業。終了予定は 6月30日」</td></tr>
+          <tr><td>入社</td><td>労働条件通知書の PDF を台帳のフォルダに置いて、「◯◯さんの入社処理をして」</td></tr>
+          <tr><td>どれか分からない</td><td>「9月だけ土曜出勤が多く、社長が特別に3万円出したいと言っている。手当か賞与か分からない」</td></tr>
+        </tbody>
+      </table>
+      <ul>
+        <li>メールの本文や、顧問先から届いた PDF・Excel を渡して「この内容を登録して」と頼んでも構いません。</li>
+        <li>従業員は氏名で伝えます。同じ氏名の人が複数いるときは、CC が従業員番号を聞きます。</li>
+        <li>何件かまとめて伝えても構いません。CC が1件ずつ読み上げます。</li>
+      </ul>
+      <div class="callout warn"><p><strong>入社は、従業員台帳の作成が先です。</strong>台帳にいない人の入社は登録できません。先に「◯◯さんの入社処理をして」と頼み、台帳を作ります。</p></div>
+    </div>
+
+    <div class="panel p3">
+      <h2>「はい」の前に見るところ</h2>
+      <p>CC は、登録する前に内容を読み上げます。次の点を確かめてから「はい」と答えてください。</p>
+      <table class="table">
+        <thead><tr><th>見るところ</th><th>確かめること</th></tr></thead>
+        <tbody>
+          <tr><td>誰</td><td>従業員番号と氏名が、伝えた人のものか（同じ姓の別の人になっていないか）</td></tr>
+          <tr><td>何を・いくら</td><td>項目名（基本給・◯◯手当など）と金額。変更前と変更後が逆になっていないか</td></tr>
+          <tr><td>いつから</td><td>「いつの給与から」が合っているか（締め日と支給日のずれに注意）</td></tr>
+          <tr><td>根拠・確認者</td><td>根拠（いつ・誰から・何で）と、内容を確認した人の名前</td></tr>
+          <tr><td>★・⚠の付いた行</td><td>CC が理由を説明します。たとえば「根拠が入っていない」「確認者がいないので🔴承認待ちが残る」「同じ人・同じ種別・同じ月の登録がすでにある」など</td></tr>
+        </tbody>
+      </table>
+      <ul>
+        <li>違っていたら、「違う。◯◯は△△」と伝えます。CC が直して、もう一度読み上げます。</li>
+        <li>「はい」と答えるまで、台帳にも入力シートにも何も書かれません。</li>
+        <li>内容に不備が1件でもあると、1件も登録されません（途中まで登録されることはありません）。CC が理由を伝えるので、直して読み上げからやり直します。</li>
+      </ul>
+      <div class="callout"><p><strong>読み上げの後で内容が変わると、登録は止まります。</strong>たとえば、読み上げの後に別の人が入力シートを保存した場合です。そのときは、CC がもう一度読み上げます。</p></div>
+    </div>
+
+    <div class="panel p4">
+      <h2>承認・訂正・相談</h2>
+      <h3>承認（来月以降にも影響する変動）</h3>
+      <p>入社・退職・休業・給与の変更・契約や税の変更は、内容を確認した担当者の記録が入るまで🔴「承認待ち」になります。伝えるときに「確認者は私（◯◯）」と添えれば、登録と同時に記録されます。あとから「◯◯さんの昇給、確認したので記録して」と伝えても構いません。承認者は担当スタッフ本人でよく、判断に迷うものだけ所長へ相談します。</p>
+      <h3>訂正</h3>
+      <p>登録した内容を直したいときは、直したい内容を伝えます（例:「給与花子さんの昇給、285,000円ではなく 280,000円でした」）。元の登録は「取消」として履歴に残り、新しい内容が登録されます。承認はやり直しになります。</p>
+      <h3>休業の終了日・相談の振り分け</h3>
+      <p>休業が終わったら、「育休三郎さん、6月30日で育休終了」と伝えます。相談として登録した内容は、扱いが決まったら CC に伝えます。振り分けが終わるまで🔴が残るので、相談したことが忘れられることはありません。</p>
+      <div class="quote">あとから書き足せるのは、確認の記録・休業の実際の終了日・相談の振り分けだけです。それ以外を直すときは、訂正（取消と登録し直し）になります。</div>
+      <div class="callout"><p><strong>相談を閉じるときの ID の書き方（入力シートに自分で書く場合）:</strong>「振り分け結果」に転記先の ID（<code>EVT-…</code>）を書くときは、台帳にある ID をそのまま書きます。後ろに説明を続けるときは、空白・読点・句点・括弧で区切ってください（例: <code>EVT-2026-11-012-01（11月賞与として登録）</code>、<code>EVT-2026-11-012-01 残りは対応不要</code>）。<code>EVT-2026-11-012-01.残りは対応不要</code> のように、ID に文字や「.」をくっつけて書くと、別の ID として読まれて閉じません。CC に伝えて閉じる場合は、CC が正しい形で書きます。</p></div>
+    </div>
+
+    <div class="panel p5">
+      <h2>🔴の受理 — IDと理由を伝える</h2>
+      <p>給与チェックで出た🔴のうち、実態を確認したうえで「このままで正しい」と判断したものは、受理として記録します。これも CC に伝えるだけで登録できます。</p>
+      <ol>
+        <li>🔴の先頭にある ID（<code>A-xxxxxx</code>）と理由を伝えます。例:「A-4d52f8 は受理。理由は、社長の指示で今月だけ特別に支給したため」</li>
+        <li>CC が、対象の🔴・理由・判断者・日付・有効範囲を読み上げます。</li>
+        <li>合っていれば「はい」と答えます。登録され、その🔴はℹ️【受理済み】に変わります。</li>
+      </ol>
+      <ul>
+        <li>受理は「当月だけ」が既定です。翌月以降も同じ条件で通すときは「継続で」と伝えます。</li>
+        <li>先頭が <code>[受理不可]</code> の🔴（最低賃金・36協定・台帳の不備など）は受理できません。資料・台帳・帳票を直します。</li>
+        <li>迷うものは受理せず、所長へ相談します。受理の一覧は報告書に載り、所長が確認します。</li>
+      </ul>
+      <div class="callout"><p><strong>これまでの方法も使えます。</strong>入力シート「8.機械の確認結果」に受理・理由・担当者・対応日を書いて、「受理を取り込んで」と頼む方法です。</p></div>
+    </div>
+
+    <div class="panel p6">
+      <h2>よくある質問</h2>
+      <h3>Q. 入力シートに書いてはいけないのですか？</h3>
+      <p>いいえ。これまでどおり書けます。全員分の精算など、同じ種類を何件もまとめて入れるときは、シートに書いて「入力シートを取り込んで」と頼むほうが速いこともあります。どちらの入れ方でも、同じ台帳・同じシートに入ります。</p>
+      <h3>Q. 伝えた内容は、どこに残りますか？</h3>
+      <p>台帳と、入力シートの該当タブの両方に残ります。あとで一覧で見たいときは、入力シートを開いてください。</p>
+      <h3>Q. 入力シートを Excel で開いたままでも登録できますか？</h3>
+      <p>できません。開いている人がいると登録が止まります。シートを閉じてから、もう一度頼んでください。</p>
+      <h3>Q. 登録の途中で止まりました。</h3>
+      <p>CC が理由を伝えます。理由を直して、読み上げからやり直します。止まったときは何も登録されていないので、二重に登録される心配はありません。</p>
+      <h3>Q. 2つの法人がある顧問先では？</h3>
+      <p>法人ごとに台帳が分かれています。「B社の◯◯さん」のように、法人名を添えて伝えてください。</p>
+      <h3>Q. CC が入力シートの話をして、伝えるだけでは進みません。</h3>
+      <p>「変動事項を伝えるので、読み上げて登録して」と頼んでください。それでも進まなければ、所長へ知らせてください（台帳の設定を確認します）。</p>
+      <h3>Q. 困ったら？</h3>
+      <p>まず CC に聞いてください。それでも分からなければ所長へ。迷っていることをそのまま伝えて相談として登録しておけば、忘れられません。</p>
+    </div>
+  </div>
+
+  <p class="nav">関連: <a href="../2026-09-v2/">入力シート v2 のご案内（2026年9月）</a>／<a href="../../payroll-harness/">仕組み編（運用ガイド）</a>／<a href="../../claude-code-manual/">操作編（Claude Code マニュアル）</a>／<a href="../../">目次へ戻る</a></p>
+  <footer>2026-11-22 公開｜対象: 伝えて登録（全台帳に配布済み）</footer>
+</div>
+</body>
+</html>
